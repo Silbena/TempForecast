@@ -1,6 +1,8 @@
 import pandas as pd
 import statsmodels.api as sm
 import plotly.express as px
+from sklearn.metrics import mean_absolute_error
+from sklearn.model_selection import TimeSeriesSplit
 import parsing as ps
 
 def load_dataset(country_name: str):
@@ -16,39 +18,72 @@ def load_dataset(country_name: str):
 
     return dataset
 
-def sarima(dataset):
-    model = sm.tsa.SARIMAX(dataset, order=(2, 0, 2), seasonal_order=(1,0,1,12)).fit()
-    predictions = model.get_forecast(steps = 2976)
+def sarima(train, test):
+    model = sm.tsa.SARIMAX(train, order=(2, 0, 2), seasonal_order=(1,0,2,12)).fit()
 
-    return predictions
+    prediction = model.get_prediction(start = test.index[0], end = test.index[-1])
+    pred_mean = prediction.predicted_mean
 
-def plot_arima(df, predictions):
+    forecast = model.get_forecast(steps = 2976)
+    fore_mean = forecast.predicted_mean
+    fore_conf_ints = forecast.conf_int()
+
+    return pred_mean, fore_mean, fore_conf_ints
+
+def plot_arima(df, fore_mean, fore_conf_ints, country_name):
     trace = px.line(x = df.index, y = df.values)
-    pred_mean = predictions.predicted_mean
-    conf_ints = predictions.conf_int()
 
-    fig = px.line(x = pred_mean.index, y = pred_mean.values,
-                     title = 'Seasonal Temperature Forecast for Sweden (SARIMA)',
+    fig = px.line(x = fore_mean.index, y = fore_mean.values,
+                     title = f'Seasonal Temperature Forecast for {country_name} (SARIMA)',
                      labels = {'x':'Year', 'y':'Temperature [C]'},
                      width = 4000,
                      height = 600,
                      color_discrete_sequence = ['#FF7F0E']
                      ).add_trace(trace.data[0])
     
-    fig.add_scatter(x=pred_mean.index, y=conf_ints['lower AverageTemperatureCelsius'],
+    fig.add_scatter(x=fore_mean.index, y=fore_conf_ints['lower AverageTemperatureCelsius'],
                     mode='lines', line=dict(color='rgba(255, 165, 0, 0.3)'), name='Lower CI')
-    fig.add_scatter(x=pred_mean.index, y=conf_ints['upper AverageTemperatureCelsius'],
+    fig.add_scatter(x=fore_mean.index, y=fore_conf_ints['upper AverageTemperatureCelsius'],
                     mode='lines', line=dict(color='rgba(255, 165, 0, 0.3)'), name='Upper CI', fill='tonexty')
 
     fig.update_layout(font = dict(size = 30))
     fig.update_traces(marker = dict(opacity = 0.7))
 
-    fig.show()
+    args = ps.parse()
+    if args.save == 0:
+        fig.show()
+    if args.save == 1:
+        path = f'plots/sarima_yearly_{country_name.lower()[:3]}.png'
+        fig.write_image(path)
+        print(f'Plot saved under: {path}')
+
+def sarima_error(df):
+    mean_error = 0
+    splits = 5
+    tscv = TimeSeriesSplit(n_splits= splits)
+
+    for train_index, test_index in tscv.split(df):
+        train, test = df.iloc[train_index], df.iloc[test_index]
+        pred_mean, _, _ = sarima(train, test)
+        mean_error += mean_absolute_error(test, pred_mean)
+    
+    mean_error = mean_error/5
+
+    print(f'The mean error: {mean_error}')
+
+    return mean_error
+
+def calculations(country_name):
+    df = load_dataset(country_name)
+    _, fore_mean, fore_conf_ints = sarima(df, df)
+    mean_error = sarima_error(df)
+
+    return df, fore_mean, fore_conf_ints, mean_error
 
 def main():
-    sweden = load_dataset('Sweden')
-    model = sarima(sweden)
-    plot_arima(sweden, model)
+    country_name = 'Sweden'
+    df, fore_mean, fore_conf_ints, _ = calculations(country_name)
+    plot_arima(df, fore_mean, fore_conf_ints, country_name)
 
 if __name__ == "__main__":
     main()

@@ -51,7 +51,7 @@ def plot_prophet(past_df, forecast_df, country_name):
     if args.save == 0:
         fig.show()
     if args.save == 1:
-        path = f'plots/prophet_seasonal_{country_name.lower()[:3]}.png'
+        path = f'plots/prophet_yearly_{country_name.lower()[:3]}.png'
         fig.write_image(path)
         print(f'Plot saved under: {path}')
 
