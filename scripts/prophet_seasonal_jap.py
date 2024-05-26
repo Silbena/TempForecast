@@ -52,7 +52,7 @@ def plot_prophet(past_df, forecast_df, country_name):
     if args.save == 0:
         fig.show()
     if args.save == 1:
-        path = f'plots/hwes_yearly_{country_name.lower()[:3]}.png'
+        path = f'plots/prophet_seasonal_{country_name.lower()[:3]}.png'
         fig.write_image(path)
         print(f'Plot saved under: {path}')
 
@@ -71,12 +71,17 @@ def prophet_error(df):
 
     return mean_error
 
-def main():
-    country_name = 'Japan'
+def calculations(country_name):
     df = load_dataset(country_name)
     _, forecast = modelling(df, df)
-    plot_prophet(df, forecast, country_name)
     mean_error = prophet_error(df)
+
+    return df, forecast, mean_error
+
+def main():
+    country_name = 'Japan'
+    df, forecast, _ = calculations(country_name)
+    plot_prophet(df, forecast, country_name)
 
 if __name__ == "__main__":
     main()

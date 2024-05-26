@@ -1,6 +1,9 @@
 from prophet import Prophet
 import pandas as pd
 import plotly.express as px
+from sklearn.metrics import mean_absolute_error
+from sklearn.model_selection import TimeSeriesSplit
+import parsing as ps
 
 def load_dataset(country_name: str):
     df = pd.read_csv('data/filtered.csv')
@@ -14,13 +17,16 @@ def load_dataset(country_name: str):
 
     return df
 
-def modelling(df):
-    model = Prophet(seasonality_mode='multiplicative')
-    model.fit(df)
-    future = model.make_future_dataframe(freq = 'YE', periods = 20, include_history = False)
-    forecast = model.predict(future)
+def modelling(train, test):
+    model = Prophet()
+    model.fit(train)
 
-    return forecast
+    predictions = model.predict(test)
+
+    time_frame = model.make_future_dataframe(freq = 'YE', periods = 20, include_history = False)
+    forecast = model.predict(time_frame)
+
+    return predictions, forecast
 
 def plot_prophet(past_df, forecast_df, country_name):
     
@@ -40,12 +46,40 @@ def plot_prophet(past_df, forecast_df, country_name):
                     mode='lines', line=dict(color='rgba(255, 165, 0, 0.3)'), name='Upper CI', fill='tonexty')
 
     fig.update_layout(font = dict(size = 30), legend_title_text = 'Legend')
-    fig.show()
+
+    args = ps.parse()
+    if args.save == 0:
+        fig.show()
+    if args.save == 1:
+        path = f'plots/prophet_seasonal_{country_name.lower()[:3]}.png'
+        fig.write_image(path)
+        print(f'Plot saved under: {path}')
+
+def prophet_error(df):
+    mean_error = 0
+    splits = 5
+    tscv = TimeSeriesSplit(n_splits=splits)
+
+    for train_index, test_index in tscv.split(df):
+        train, test = df.iloc[train_index], df.iloc[test_index]
+        predictions, _ = modelling(train, test)
+        mean_error += mean_absolute_error(test['y'], predictions['yhat'])
+
+    mean_error /= splits
+    print(f'The mean error: {mean_error}')
+
+    return mean_error
+
+def calculations(country_name):
+    df = load_dataset(country_name)
+    _, forecast = modelling(df, df)
+    mean_error = prophet_error(df)
+
+    return df, forecast, mean_error
 
 def main():
     country_name = 'Japan'
-    df = load_dataset(country_name)
-    forecast = modelling(df)
+    df, forecast, _ = calculations(country_name)
     plot_prophet(df, forecast, country_name)
 
 if __name__ == "__main__":
