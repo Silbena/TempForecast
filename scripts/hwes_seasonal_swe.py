@@ -2,6 +2,8 @@ import pandas as pd
 import statsmodels.api as sm
 from statsmodels.tsa.exponential_smoothing.ets import ETSModel
 import plotly.express as px
+from sklearn.metrics import mean_absolute_error
+from sklearn.model_selection import TimeSeriesSplit
 import parsing as ps
 
 def load_dataset(country_name: str):
@@ -17,41 +19,70 @@ def load_dataset(country_name: str):
 
     return df
 
-def hwes(df):
-    model = ETSModel(df, trend = 'add', seasonal = 'add', seasonal_periods= 12, freq = 'MS').fit()
-    start_date = df.index[-1]
-    predictions = model.get_prediction(start = start_date, end = '2261-08-01').summary_frame()
+def hwes(train, test):
+    model = ETSModel(train, error='add', trend='add', seasonal='add', seasonal_periods=12).fit()
+
+    predictions = model.get_prediction(start=test.index[0], end=test.index[-1]).summary_frame()
     pred_mean = predictions['mean']
-    conf_ints = (predictions['pi_lower'], predictions['pi_upper'])
 
-    return pred_mean, conf_ints
+    forecast = model.get_prediction(start = test.index[-1], end = '2261-08-01').summary_frame()
+    fore_mean = forecast['mean']
+    fore_conf_ints = (forecast['pi_lower'], forecast['pi_upper'])
 
-def plot_hwes(df, pred_mean, conf_ints, country_name):
-    trace = px.line(x = df.index, y = df.values)
+    return pred_mean, fore_mean, fore_conf_ints
 
-    fig = px.line(x = pred_mean.index, y = pred_mean.values,
-                     title = f'Seasonal Temperature Forecast for {country_name} (HWES)',
-                     labels = {'x':'Year', 'y':'Temperature [C]'},
-                     width = 4000,
-                     height = 600,
-                     color_discrete_sequence = ['#FF7F0E']
-                     ).add_trace(trace.data[0])
-    
-    fig.add_scatter(x=pred_mean.index, y=conf_ints[0],
+def plot_hwes(past_df, fore_mean, fore_conf_ints, country_name):
+    base = px.line(past_df, x=past_df.index, y='AverageTemperatureCelsius').data[0]
+
+    fig = px.line(x=fore_mean.index, y=fore_mean.values,
+                  title=f'Seasonal Temperature Forecast for {country_name} (HWES)',
+                  labels={'x': 'Year', 'y': 'Temperature [C]'},
+                  width=3000,
+                  height=600,
+                  color_discrete_sequence=['#FF7F0E']).add_trace(base)
+
+    fig.add_scatter(x=fore_mean.index, y=fore_conf_ints[0],
                     mode='lines', line=dict(color='rgba(255, 165, 0, 0.3)'), name='Lower CI')
-    fig.add_scatter(x=pred_mean.index, y=conf_ints[1],
+    fig.add_scatter(x=fore_mean.index, y=fore_conf_ints[1],
                     mode='lines', line=dict(color='rgba(255, 165, 0, 0.3)'), name='Upper CI', fill='tonexty')
 
-    fig.update_layout(font = dict(size = 30))
-    fig.update_traces(marker = dict(opacity = 0.7))
+    fig.update_layout(font=dict(size=30))
+    fig.update_traces(marker=dict(opacity=0.7))
 
-    fig.show()
+    args = ps.parse()
+    if args.save == 0:
+        fig.show()
+    if args.save == 1:
+        path = f'plots/hwes_yearly_{country_name.lower()[:3]}.png'
+        fig.write_image(path)
+        print(f'Plot saved under: {path}')
+
+def hwes_error(df):
+    mean_error = 0
+    splits = 5
+    tscv = TimeSeriesSplit(n_splits=splits)
+
+    for train_index, test_index in tscv.split(df):
+        train, test = df.iloc[train_index], df.iloc[test_index]
+        pred_mean, _, _ = hwes(train, test)
+        mean_error += mean_absolute_error(test, pred_mean)
+
+    mean_error /= splits
+    print(f'The mean error: {mean_error}')
+
+    return mean_error
+
+def calculations(country_name):
+    df = load_dataset(country_name)
+    _, fore_mean, fore_conf_ints = hwes(df, df)
+    mean_error = hwes_error(df)
+
+    return df, fore_mean, fore_conf_ints, mean_error
 
 def main():
     country_name = 'Sweden'
-    df = load_dataset(country_name)
-    pred_mean, conf_ints = hwes(df)
-    plot_hwes(df, pred_mean, conf_ints, country_name)
+    df, fore_mean, fore_conf_ints, mean_error = calculations(country_name)
+    plot_hwes(df, fore_mean, fore_conf_ints, country_name)
 
 if __name__ == "__main__":
     main()
