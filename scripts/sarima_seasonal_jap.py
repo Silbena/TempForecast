@@ -17,18 +17,18 @@ def load_dataset(country_name: str):
     return dataset
 
 def sarima(dataset):
-    model = sm.tsa.SARIMAX(dataset, order=(2, 0, 2), seasonal_order=(1,0,1,12)).fit()
+    model = sm.tsa.SARIMAX(dataset, order=(1, 0, 1), seasonal_order=(1,0,1,12)).fit()
     predictions = model.get_forecast(steps = 2976)
 
     return predictions
 
-def plot_arima(df, predictions):
+def plot_arima(df, predictions, country_name):
     trace = px.line(x = df.index, y = df.values)
     pred_mean = predictions.predicted_mean
     conf_ints = predictions.conf_int()
 
     fig = px.line(x = pred_mean.index, y = pred_mean.values,
-                     title = 'Seasonal Temperature Forecast for Sweden (SARIMA)',
+                     title = f'Seasonal Temperature Forecast for {country_name} (SARIMA)',
                      labels = {'x':'Year', 'y':'Temperature [C]'},
                      width = 4000,
                      height = 600,
@@ -46,9 +46,10 @@ def plot_arima(df, predictions):
     fig.show()
 
 def main():
-    sweden = load_dataset('Sweden')
-    model = sarima(sweden)
-    plot_arima(sweden, model)
+    country_name = 'Japan'
+    df = load_dataset(country_name)
+    model = sarima(df)
+    plot_arima(df, model, country_name)
 
 if __name__ == "__main__":
     main()
