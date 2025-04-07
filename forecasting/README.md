@@ -1,6 +1,7 @@
 # World temperature forcasting with Plotly
 
 The repository contains scripts for forecasting and plotting world temperatures with Plotly in Python.
+View **summary.md** to see the summary of plots.
 
 Models used for forecasting:
 - ARIMA (yearly)
