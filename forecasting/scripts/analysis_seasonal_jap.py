@@ -20,7 +20,7 @@ result = adfuller(df)
 if result[0] < 0.05:
     print('Yey! The time series is stationary. Set: d=0.')
 else:
-    print('Oh no! The time series ism\'t stationary. Need to adjust differencing operations (d).')
+    print('Oh no! The time series isn\'t stationary. Need to adjust differencing operations (d).')
 
 # Auto-correlation plot
 plot_acf(df)
