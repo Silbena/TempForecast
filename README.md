@@ -7,3 +7,9 @@ Models used for forecasting:
 - SARIMA  (yearly)
 - Facebook Prophet (yearly and seasonal)
 - HWES (seasonal)
+
+Countries included in forcasting:
+- Japan
+- Sweden
+
+In additona exploratory scatter plots are included.
