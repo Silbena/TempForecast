@@ -36,7 +36,7 @@ def plot_arima(df, fore_mean, fore_conf_ints, country_name):
     fig = px.line(x = fore_mean.index, y = fore_mean.values,
                      title = f'Seasonal Temperature Forecast for {country_name} (SARIMA)',
                      labels = {'x':'Year', 'y':'Temperature [C]'},
-                     width = 4000,
+                     width = 3000,
                      height = 600,
                      color_discrete_sequence = ['#FF7F0E']
                      ).add_trace(trace.data[0])
@@ -53,7 +53,7 @@ def plot_arima(df, fore_mean, fore_conf_ints, country_name):
     if args.save == 0:
         fig.show()
     if args.save == 1:
-        path = f'plots/sarima_yearly_{country_name.lower()[:3]}.png'
+        path = f'plots/sarima_seasonal_{country_name.lower()[:3]}.png'
         fig.write_image(path)
         print(f'Plot saved under: {path}')
 
