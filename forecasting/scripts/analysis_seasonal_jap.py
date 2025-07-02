@@ -4,38 +4,39 @@ from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
 from pmdarima.arima.utils import ndiffs
 import matplotlib.pyplot as plt
 
-df = pd.read_csv('data/filtered.csv')
-df = df[df['Country'] == 'Japan']
 
-date_str = df['year'].astype(str) + '-' + df['month'].astype(str) + '-01'
-df['date'] = pd.to_datetime(date_str, format='%Y-%m-%d')
+def main():
+    df = pd.read_csv('data/filtered.csv')
+    df = df[df['Country'] == 'Japan']
 
-df = df.groupby('date')['AverageTemperatureCelsius'].mean()
-df = df.asfreq(freq='MS')
-df.interpolate(inplace=True)
+    date_str = df['year'].astype(str) + '-' + df['month'].astype(str) + '-01'
 
-# Augmented Dickey-Fuller unit root test
-result = adfuller(df)
+    df['date'] = pd.to_datetime(date_str,
+                                format='%Y-%m-%d')
 
-if result[0] < 0.05:
-    print('Yey! The time series is stationary. Set: d=0.')
-else:
-    print('Oh no! The time series isn\'t stationary. Need to adjust differencing operations (d).')
+    df = df.groupby('date')['AverageTemperatureCelsius'].mean()
+    
+    df = df.asfreq(freq='MS')
 
-# Auto-correlation plot
-plot_acf(df)
-plt.show()
+    df.interpolate(inplace=True)
 
-# Nr of differences 
-nr_differences = ndiffs(df, test = 'adf')
-print(f'Number of differeces to set: {nr_differences}')
+    result = adfuller(df)
 
-# Order of autoregresssive term (nr of lags used as predictors)
+    if result[0] < 0.05:
+        print('The time series is stationary. Set: d=0.')
+    else:
+        print('The time series isn\'t stationary. Need to adjust differencing operations (d).')
 
-# Partial auto-corrrelation plot
-plot_pacf(df)
-plt.show()
+    plot_acf(df)
+    plt.show()
 
-# From the plot: p = 1 would be the best
-# q - order of Moving Average Term
-# Would opt for q = 1
+    nr_differences = ndiffs(df,
+                            test='adf')
+    
+    print(f'Number of differeces to set: {nr_differences}')
+
+    plot_pacf(df)
+    plt.show()
+
+if __name__ == '__main__':
+    main()
