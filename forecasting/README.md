@@ -30,7 +30,7 @@ HWES is a Holt-Winters Exponential Smoothing.
 ### Seasonal
 
 <div align="center">
-  <img src="plots/prophet_seasonal_jap.png" width="80%">
+  <img src="plots/prophet_seasonal_jap.png" width="70%">
 </div>
 
 ### Yearly
