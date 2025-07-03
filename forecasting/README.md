@@ -23,10 +23,11 @@ HWES is a Holt-Winters Exponential Smoothing.
 ![HWES Yearly Japan](plots/hwes_yearly_jap.png)
 
 ## Facebook Prophet
+### Seasonal
 ![Prophet Seasonal Japan](plots/prophet_seasonal_jap.png)
 
+### Yearly
 ![Prophet Yearly Japan](plots/prophet_yearly_jap.png)
-![Prophet Yearly Sweden](plots/prophet_yearly_swe.png)
 
 ## Comparison
 |            | arima_y  | hwes_s   | prophet_s | prophet_y | sarima_s  | sarima_y  |
