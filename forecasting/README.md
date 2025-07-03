@@ -16,7 +16,6 @@ Countries included in prediction:
 ARIMA is an Autoregressive Integrated Moving Average.
 
 ![ARIMA Yearly Japan](plots/arima_yearly_jap.png)
-![ARIMA Yearly Sweden](plots/arima_yearly_swe.png)
 
 ## HWES
 HWES is a Holt-Winters Exponential Smoothing.
@@ -25,7 +24,6 @@ HWES is a Holt-Winters Exponential Smoothing.
 
 ## Facebook Prophet
 ![Prophet Seasonal Japan](plots/prophet_seasonal_jap.png)
-![Prophet Seasonal Sweden](plots/prophet_seasonal_swe.png)
 
 ![Prophet Yearly Japan](plots/prophet_yearly_jap.png)
 ![Prophet Yearly Sweden](plots/prophet_yearly_swe.png)
