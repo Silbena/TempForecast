@@ -14,5 +14,5 @@ Data were filtered with **overview**&rarr; **scripts** &rarr; **filtering.py**.
 To see the forecasts with ARIMA, SARIMA, Facebook Prophet, and HWES go to &rarr; **forecasting**.
 
 <div align="center"/>
-  <img src="forecasting/plots/prophet_yearly_jap.png", alt=forecasting width=70%>
+  <img src="forecasting/plots/prophet_yearly_jap.png", alt=forecasting width=50%>
 </div>div
