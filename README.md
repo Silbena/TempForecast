@@ -6,7 +6,9 @@ The data come from the [Climate Change: Earth Surface Temperature Data](https://
 Data were filtered with **overview**&rarr; **scripts** &rarr; **filtering.py**.
 
 ## Overview
-<img src="overview/plots/line.png" alt=overview width=50%/>
+<div align="center"/>
+  <img src="overview/plots/line.png" alt=overview width=50%/>
+</div>
 
 ## Forecasting
 To see the forecasts with ARIMA, SARIMA, Facebook Prophet, and HWES go to &rarr; **forecasting**.
