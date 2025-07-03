@@ -15,22 +15,33 @@ Countries included in prediction:
 ## ARIMA
 ARIMA is an Autoregressive Integrated Moving Average.
 
-<img src="plots/arima_yearly_jap.png" width="50%">
+<div align="center">
+  <img src="plots/arima_yearly_jap.png" width="50%">
+</div>
 
 ## HWES
 HWES is a Holt-Winters Exponential Smoothing.
 
-<img src="plots/hwes_yearly_jap.png" width="100%">
+<div align="center">
+  <img src="plots/hwes_yearly_jap.png" width="100%">
+</div>
 
 ## Facebook Prophet
 ### Seasonal
-<img src="plots/prophet_seasonal_jap.png" width="50%">
+
+<div align="center">
+  <img src="plots/prophet_seasonal_jap.png" width="100%">
+</div>
 
 ### Yearly
-<img src="plots/prophet_yearly_jap.png" width="50%">
+
+<div align="center">
+  <img src="plots/prophet_yearly_jap.png" width="50%">
+</div>
 
 ## Mean errors
 I calculated mean error for each method and each country. _Y_ stands fro a yearly analysis. _S_ stands for a seasonal analysis.
+
 |            | arima_y  | hwes_s   | prophet_s | prophet_y | sarima_s  | sarima_y  |
 |------------|----------|----------|-----------|-----------|-----------|-----------|
 | jap        | 0.521628 | 0.893788 | 0.873801  | 0.681572  | 0.818446  | 0.567941  |
