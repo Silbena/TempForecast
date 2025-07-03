@@ -21,9 +21,6 @@ ARIMA is an Autoregressive Integrated Moving Average.
 ## SARIMA
 SARIMA is a Seasonal Autoregressive Integrated Moving Average.
 
-![SARIMA Seasonal Japan](plots/sarima_seasonal_jap.png)
-![SARIMA Seasonal Sweden](plots/sarima_seasonal_swe.png)
-
 ![SARIMA Yearly Japan](plots/sarima_yearly_jap.png)
 ![SARIMA Yearly Sweden](plots/sarima_yearly_swe.png)
 
@@ -32,7 +29,6 @@ HWES is a Holt-Winters Exponential Smoothing.
 
 ![HWES Yearly Japan](plots/hwes_yearly_jap.png)
 ![HWES Yearly Sweden](plots/hwes_yearly_swe.png)
-
 
 ## Facebook Prophet
 ![Prophet Seasonal Japan](plots/prophet_seasonal_jap.png)
