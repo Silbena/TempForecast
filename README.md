@@ -7,10 +7,12 @@ Data were filtered with **overview**&rarr; **scripts** &rarr; **filtering.py**.
 
 ## Overview
 <div align="center"/>
-  <img src="overview/plots/line.png" alt=overview width=50%/>
+  <img src="overview/plots/line.png" alt=overview width=70%/>
 </div>
 
 ## Forecasting
 To see the forecasts with ARIMA, SARIMA, Facebook Prophet, and HWES go to &rarr; **forecasting**.
 
-![Forecasting](forecasting/plots/prophet_yearly_jap.png)
+<div align="center"/>
+  <img src="forecasting/plots/prophet_yearly_jap.png", alt=forecasting width=70%>
+</div>div
