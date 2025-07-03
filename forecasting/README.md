@@ -8,7 +8,7 @@ Models used for forecasting:
 - Facebook Prophet - yearly and seasonal,
 - HWES - seasonal.
 
-Countries included in prediction:
+Countries included:
 - Japan,
 - Sweden.
 
