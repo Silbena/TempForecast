@@ -1,9 +1,7 @@
 # World Temperature Analysis
 
 ## Data
-The data come from the [Climate Change: Earth Surface Temperature Data](https://www.kaggle.com/datasets/berkeleyearth/climate-change-earth-surface-temperature-data/data?select=GlobalLandTemperaturesByCity.csv) dataset.
-
-Data were filtered with **overview**&rarr; **scripts** &rarr; **filtering.py**.
+The data come from the [Climate Change: Earth Surface Temperature Data](https://www.kaggle.com/datasets/berkeleyearth/climate-change-earth-surface-temperature-data/data?select=GlobalLandTemperaturesByCity.csv) dataset. Data were filtered with **overview**&rarr; **scripts** &rarr; **filtering.py**.
 
 ## Overview
 8 countries on different continents were chosen, although for some there were no temperature records from the middle XVIII to middle XIX centure do not exist.
